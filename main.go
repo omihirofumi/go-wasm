@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"syscall/js"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	window := js.Global()
+	document := window.Get("document")
+	body := document.Get("body")
+	btn := document.Call("createElement", "button")
+	btn.Set("textContent", "click me!")
+	btn.Call("addEventListener", "click", js.FuncOf(func(js.Value, []js.Value) interface{} {
+		fmt.Println("Hello, WebAssembly!")
+		return nil
+	}))
+	body.Call("appendChild", btn)
+	select {}
 }
